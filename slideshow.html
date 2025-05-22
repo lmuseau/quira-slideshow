@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <title>Birthday Slideshow</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    img, video {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+  <img id='media' style='display:none'>
+  <video id='video' style='display:none' muted autoplay></video>
+
+  <script>
+    const numberOfPhotos = 127
+    const numberOfVideos = 5
+    const photosPerVideo = 10
+    const mediaFiles = []
+    for (let i = 1; i <= numberOfPhotos; i++) {
+      mediaFiles.push(`${i}.jpeg`)
+      if (i % photosPerVideo === 0 && ((i / photosPerVideo) <= numberOfVideos)) {
+        mediaFiles.push(`${i / photosPerVideo}.mov`)
+      }
+    }
+
+    let index = 0
+    const image = document.getElementById('media')
+    const video = document.getElementById('video')
+
+    function showNext() {
+      const file = mediaFiles[index]
+      if (file.endsWith('.mov')) {
+        image.style.display = 'none'
+        video.style.display = 'block'
+        video.src = file
+        video.play()
+        video.onended = () => {
+          index = (index + 1) % mediaFiles.length
+          showNext()
+        }
+      } else {
+        video.style.display = 'none'
+        image.style.display = 'block'
+        image.src = file
+        setTimeout(() => {
+          index = (index + 1) % mediaFiles.length
+          showNext()
+        }, 5000) // 5 seconds per photo
+      }
+    }
+
+    showNext()
+  </script>
+</body>
+</html>
